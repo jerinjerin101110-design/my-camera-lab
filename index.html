@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Camera Lab</title>
+</head>
+<body style="font-family: Arial; text-align: center; padding: 20px;">
+  <h1>My Camera Lab 📷</h1>
+  <p>This page will request permission to use your camera.</p>
+
+  <video id="video" autoplay playsinline muted
+    style="width:100%; max-width:500px; background:#222;"></video>
+
+  <br><br>
+  <button onclick="startCamera()">Start Camera</button>
+  <button onclick="stopCamera()">Stop Camera</button>
+
+  <p id="status">Camera is off.</p>
+
+  <script>
+    let stream;
+
+    async function startCamera() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "user" },
+          audio: false
+        });
+
+        document.getElementById("video").srcObject = stream;
+        document.getElementById("status").textContent =
+          "Camera is running with your permission.";
+      } catch (error) {
+        document.getElementById("status").textContent =
+          "Camera error: " + error.name;
+      }
+    }
+
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+
+      document.getElementById("video").srcObject = null;
+      document.getElementById("status").textContent = "Camera is off.";
+    }
+  </script>
+</body>
+</html>
